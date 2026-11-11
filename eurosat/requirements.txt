@@ -1,0 +1,15 @@
+# Inferred dependencies; original package versions were not recorded fully.
+# Use a TensorFlow-supported Python version. This is not an environment lock.
+tensorflow
+numpy
+scipy
+pandas
+scikit-learn
+scikit-image
+opencv-python-headless
+Pillow
+matplotlib
+seaborn
+tqdm
+joblib
+jupyterlab

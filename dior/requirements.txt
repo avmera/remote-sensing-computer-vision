@@ -1,0 +1,9 @@
+# These two versions are printed in the historical notebook output.
+ultralytics==8.3.229
+torch==2.7.1
+# Remaining imports; exact historical versions unavailable.
+numpy
+Pillow
+matplotlib
+seaborn
+jupyterlab

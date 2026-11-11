@@ -1,0 +1,27 @@
+# Reconstructed from original notebook cell 6, not a recovered historical file.
+# Replace with the absolute path to this checkout's dior directory.
+path: /absolute/path/to/remote-sensing-computer-vision/dior
+train: train/images
+val: val/images
+test: test/images
+names:
+  0: airplane
+  1: airport
+  2: baseballfield
+  3: basketballcourt
+  4: bridge
+  5: chimney
+  6: dam
+  7: expressway-service-area
+  8: expressway-toll-station
+  9: harbor
+  10: golffield
+  11: groundtrackfield
+  12: overpass
+  13: stadium
+  14: storagetank
+  15: tenniscourt
+  16: trainstation
+  17: vehicle
+  18: windmill
+  19: ship

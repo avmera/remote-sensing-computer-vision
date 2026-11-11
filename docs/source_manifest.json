@@ -1,0 +1,22 @@
+[
+  {
+    "source": "EuroSAT/ErouSat.ipynb",
+    "published": "eurosat/01_features_and_classifiers.ipynb",
+    "source_sha256": "3ecdd8de6e911dadd46f51f8b835d9f350750fd78fd147e174fe2cddf766b001"
+  },
+  {
+    "source": "EuroSAT/transfer.ipynb",
+    "published": "eurosat/02_transfer_learning.ipynb",
+    "source_sha256": "068bb6d30e72cabefe48666c8951e0b4bc7296245c60f1d3123c5e8e5d5fdc70"
+  },
+  {
+    "source": "EuroSAT/decision_Fustion.ipynb",
+    "published": "eurosat/03_decision_fusion.ipynb",
+    "source_sha256": "9ff8431d2bc90b372df05c40bda4b99da27585521f9e653558df8eca3eb0087a"
+  },
+  {
+    "source": "DIOR/Detection.ipynb",
+    "published": "dior/01_yolo_detection.ipynb",
+    "source_sha256": "46fbc60c900eea0705e4475899143c9f16a7fc24d652f5227ff3516961600dce"
+  }
+]

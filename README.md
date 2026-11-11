@@ -1,65 +1,42 @@
 # Remote Sensing Computer Vision
 
-A collection of academic Computer Vision projects exploring **machine learning and deep learning for Earth Observation**, including satellite image classification and object detection.
-
-The projects cover traditional feature extraction, CNNs, transfer learning, object detection, and model evaluation using the EuroSAT and DIOR datasets.
+Two undergraduate Computer Vision course projects applying **machine learning and deep learning to remote sensing imagery**. The work explores land-cover classification with EuroSAT and object detection with DIOR, from image preparation and feature extraction to model training and evaluation.
 
 ## Projects
 
-### 1. EuroSAT — Land Use / Land Cover Classification
+### EuroSAT — Land Use / Land Cover Classification
 
-Satellite image classification using traditional machine learning and deep learning techniques.
+Classify **27,000 RGB satellite image patches across 10 land-cover classes** using handcrafted features and neural networks.
 
-**Dataset:** EuroSAT — 27,000 RGB satellite image patches across 10 land-cover classes.
+- Extract and visualize HOG features, Gabor filter responses, and color moments.
+- Train SVM, KNN, and ANN classifiers using HOG and color moments.
+- Explore CNNs with and without dropout, MobileNetV2 transfer learning, and decision fusion.
+- Evaluate predictions using accuracy, precision, recall, F1 scores, and confusion matrices.
 
-**Methods:**
+**Recorded highlights:** MobileNetV2 achieved approximately **90% accuracy with a frozen backbone** and **91% with partial fine-tuning** on a 5,400-image test directory.
 
-- Feature extraction: HOG, Gabor filters, and color moments
-- Traditional machine learning: SVM and KNN
-- Neural networks: ANN, CNN, and MobileNetV2 transfer learning
-- Exploratory decision fusion
+[Explore the EuroSAT project →](eurosat/README.md)
 
-**Selected results:**
+### DIOR — Object Detection in Remote Sensing Imagery
 
-- MobileNetV2 with frozen backbone: approximately 90% accuracy
-- MobileNetV2 with partial fine-tuning: approximately 91% accuracy
+Detect objects in optical remote sensing imagery using **YOLOv8n and YOLOv8s**, with coursework experiments on an **800-image DIOR subset**.
 
-Both results are reported on a 5,400-image test directory.
+- Convert XML bounding-box annotations to YOLO format.
+- Prepare training, validation, and test subsets.
+- Fine-tune pretrained detectors with full-network and partially frozen configurations.
+- Inspect precision–recall curves, confusion matrices, and detection visualizations.
 
-[Explore EuroSAT Project](eurosat/README.md)
+**Recorded highlight:** YOLOv8s with the first 10 modules frozen achieved **0.5339 mAP@0.50** and **0.3443 mAP@0.50:0.95** on 120 validation images. Reported class coverage and evaluation populations vary across runs; details accompany the project results.
 
-### 2. DIOR — Object Detection in Remote Sensing Imagery
-
-Object detection using YOLOv8 architectures on aerial and satellite imagery.
-
-**Dataset:** DIOR — experiments conducted on an 800-image subset.
-
-**Methods:**
-
-- Annotation conversion from XML to YOLO format
-- YOLOv8n and YOLOv8s fine-tuning
-- Model evaluation using precision, recall, and mean Average Precision (mAP)
-
-**Selected results — YOLOv8s (`freeze=10`):**
-
-- mAP@0.50: 0.5339
-- mAP@0.50:0.95: 0.3443
-
-These results are from 120 validation images after fine-tuning with the first 10 model modules frozen.
-
-[Explore DIOR Project](dior/README.md)
+[Explore the DIOR project →](dior/README.md)
 
 ## Technologies
 
-**Programming:** Python
-
-**Machine Learning:** scikit-learn, SVM, KNN
-
-**Deep Learning:** TensorFlow, Keras, PyTorch, ANN, CNN, MobileNetV2, YOLOv8
-
-**Computer Vision:** OpenCV, HOG, Gabor Filters, Feature Extraction, Transfer Learning, Object Detection
-
-**Tools:** Jupyter Notebook, NumPy, Pandas, Matplotlib
+- **Language and notebooks:** Python, Jupyter Notebook
+- **Machine learning:** scikit-learn, SVM, KNN
+- **Deep learning:** TensorFlow, Keras, PyTorch, Ultralytics YOLO
+- **Image processing and analysis:** OpenCV, scikit-image, NumPy, SciPy, Pandas
+- **Visualization:** Matplotlib, Seaborn
 
 ## Repository Structure
 
@@ -85,10 +62,10 @@ remote-sensing-computer-vision/
 └── README.md
 ```
 
-## Reproducibility
+## Exploring the Projects
 
-Each project contains its own documentation, notebooks, dependencies, and available experimental results.
+Start with the project READMEs, then open the notebooks to view the implementations, saved outputs, and visualizations. Each project includes dependencies and dataset setup instructions for running experiments locally.
 
-The reported metrics are drawn from saved notebook outputs and have not been independently reproduced. For details on evaluation procedures, limitations, and dataset preparation, see the individual project documentation.
+Results are from the original coursework experiments and have not been independently reproduced. Evaluation settings may differ between experiments; brief qualifications accompany the relevant results.
 
 Datasets and trained model weights are not included in this repository.

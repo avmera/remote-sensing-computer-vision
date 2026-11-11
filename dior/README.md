@@ -1,75 +1,81 @@
-# DIOR — Remote Sensing Object Detection
+# DIOR — Object Detection in Remote Sensing Imagery
 
-**Objective:** prepare optical remote sensing annotations for YOLO and compare pretrained YOLOv8 model adaptation strategies under a small training budget.
+An undergraduate Computer Vision project applying YOLOv8 to optical remote sensing imagery, from annotation preparation to detector fine-tuning and visual evaluation.
 
-DIOR is introduced in Li et al., [*Object Detection in Optical Remote Sensing Images: A Survey and A New Benchmark*](https://arxiv.org/abs/1909.00133). Obtain data through the [dataset authors' project page](https://gcheng-nwpu.github.io/). This project uses horizontal bounding boxes and a custom 800-image subset; it is not a result on the official full benchmark split.
+[← Back to portfolio](../README.md)
 
-## Implementation
+## Dataset and Objective
 
-[The detection notebook](01_yolo_detection.ipynb) contains archive extraction, annotation inspection, XML-to-YOLO conversion, subset creation, class-count exploration, training, and validation visualization.
+[DIOR](https://gcheng-nwpu.github.io/) contains optical remote sensing images with horizontal bounding-box annotations across 20 object categories, including airplanes, ships, vehicles, bridges, and storage tanks.
 
-1. Parse XML image dimensions and bounding boxes. Normalize centers and widths/heights to image size: `x=(xmin+xmax)/(2W)`, `y=(ymin+ymax)/(2H)`, `w=(xmax-xmin)/W`, `h=(ymax-ymin)/H`.
-2. Retain images with nonempty converted labels; saved output lists 11,357 eligible images and 22,713 generated label files across the annotation directory.
-3. Randomly sample 800 images, shuffle, and copy a 70/15/15 split: 560 training, 120 validation, 120 test. No sampling seed or split manifest is saved.
-4. Train for 10 epochs, at image size 640 and batch size 4. Saved configurations record CPU execution, automatic optimizer selection, seed 0, and deterministic mode. That training seed does not seed the preceding Python subset selection.
-5. Validate trained `best.pt` checkpoints. Report precision, recall, mAP@0.50, mAP@0.50:0.95, confusion matrices, PR curves, and label/prediction montages. No explicit test-split evaluation is present.
+The coursework uses an **800-image subset**, divided into **560 training**, **120 validation**, and **120 test images**. The objective is to gain practical experience preparing detection data and exploring YOLOv8n and YOLOv8s adaptation strategies.
 
-## Pretrained weights versus training
+## Implemented Workflow
 
-- `train_pretrained`: starts from `yolov8n.pt` and calls `.train()` with no user-specified layer freeze. This is full-network adaptation to DIOR, not off-the-shelf inference.
-- `head_only`: starts from `yolov8n.pt`, calls `.train(freeze=10)`, freezing the first 10 modules. The legacy run name does not mean that only the final prediction layer is trainable.
-- `head_only2`: same freeze setting with `yolov8s.pt`.
-- `train_scratch`: configurations, CSV history, and plots exist, but the corresponding training cell is absent. Its config names `yolov8n.yaml` while also recording `pretrained: true`; it is retained as supplementary evidence, not asserted as a verified scratch-training comparison. `train_scratch2` contains only partial artifacts and is omitted from the publishing copy.
+1. Inspect sample images, XML annotations, and object-class distributions.
+2. Convert XML boxes into YOLO labels with normalized center coordinates, width, and height.
+3. Select labeled images and prepare a 70/15/15 data split.
+4. Fine-tune pretrained YOLOv8 models for **10 epochs**, using **640-pixel image size** and **batch size 4**.
+5. Evaluate trained checkpoints using precision, recall, mAP, confusion matrices, and detection visualizations.
 
-All reported notebook validation metrics below come from trained local checkpoints. No baseline for unadapted pretrained inference is reported.
+**Technologies:** Python, Ultralytics YOLO, PyTorch, NumPy, Pillow, Matplotlib, Seaborn, and Jupyter Notebook.
 
-## Recorded validation results
+[Open the detection notebook →](01_yolo_detection.ipynb)
 
-Source cells 18–20 (zero-based original indices; notebook IDs `source-018` through `source-020`). Metrics are fractions, not percentages.
+## Models
 
-| Run | Model / adaptation | Precision | Recall | mAP@0.50 | mAP@0.50:0.95 | Images / objects |
-|---|---|---:|---:|---:|---:|---|
-| head_only2 | YOLOv8s, freeze=10 | 0.6545 | 0.4466 | 0.5339 | 0.3443 | 120 / 1,382 |
-| head_only | YOLOv8n, freeze=10 | 0.5198 | 0.3570 | 0.3705 | 0.2312 | 120 / 1,382 |
-| train_pretrained | YOLOv8n, full adaptation | 0.6044 | 0.4169 | 0.4507 | 0.3121 | 120 / 1,356 |
+| Model | Training configuration | Saved run |
+|---|---|---|
+| YOLOv8n | Full-network fine-tuning from pretrained weights | `train_pretrained` |
+| YOLOv8n | Fine-tuning with the first 10 modules frozen (`freeze=10`) | `head_only` |
+| YOLOv8s | Fine-tuning with the first 10 modules frozen (`freeze=10`) | `head_only2` |
 
-The fully adapted run has a different validation object count and different per-class supports. This is **not a controlled three-way ranking**. The two frozen-backbone runs share reported support counts, but exact split identity cannot be established without file manifests. The displayed validation reports cover 18 classes with instances rather than all 20 configured categories.
+All three experiments train on DIOR starting from pretrained weights. The `head_only` run names refer to the `freeze=10` configuration; trainable layers extend beyond the final prediction layer.
 
-Precision measures the fraction of detections counted as correct; recall measures recovered ground-truth objects. AP summarizes the precision–recall curve; mAP averages class AP at IoU 0.50 or over IoU 0.50–0.95. The framework's summary uses its own confidence-selection procedure, not a fixed deployment threshold chosen here.
+## Recorded Validation Results
 
-![Existing YOLOv8s training-run normalized confusion matrix](evidence/head_only2/confusion_matrix_normalized.png)
+These metrics are from saved outputs of the original coursework experiments and have not been independently reproduced. All rows use 120 validation images; the separate test subset is not used for these reported results.
 
-![Existing YOLOv8s training-run precision–recall plot](evidence/head_only2/BoxPR_curve.png)
+| Model / configuration | Precision | Recall | mAP@0.50 | mAP@0.50:0.95 |
+|---|---:|---:|---:|---:|
+| YOLOv8n, full-network fine-tuning | 0.6044 | 0.4169 | 0.4507 | 0.3121 |
+| YOLOv8n, `freeze=10` | 0.5198 | 0.3570 | 0.3705 | 0.2312 |
+| YOLOv8s, `freeze=10` | 0.6545 | 0.4466 | 0.5339 | 0.3443 |
 
-Both figures are saved training-run artifacts; they should not be assumed to be the exact later validation invocation. The final notebook validation cells retained text figure placeholders but no embedded image bytes. [Evidence folders](evidence/) retain CSV histories, sanitized training arguments, training curves, and selected evaluation plots for traceability.
+The full-network run evaluates 1,356 objects, while the frozen-module runs evaluate 1,382, so the rows represent different evaluation populations rather than a controlled ranking. Reports cover 18 classes with instances; class-name casing in annotation conversion can omit the two expressway categories, so the metrics do not establish full 20-class coverage.
 
-## Reproduction setup
+mAP@0.50 summarizes average precision at an intersection-over-union threshold of 0.50; mAP@0.50:0.95 averages across thresholds from 0.50 to 0.95. Values above are fractions, not percentages.
 
-Create an environment and install `dior/requirements.txt`; launch Jupyter from `dior/`. Place downloaded data in this layout:
+## Visualizations
+
+The saved YOLOv8s training run includes a precision–recall curve and a normalized confusion matrix:
+
+![YOLOv8s precision–recall curve](evidence/head_only2/BoxPR_curve.png)
+
+![YOLOv8s normalized confusion matrix](evidence/head_only2/confusion_matrix_normalized.png)
+
+Browse the [saved experiment artifacts](evidence/) for training curves, CSV histories, configurations, and additional plots. These figures come from the training runs; the table above records the notebook's later validation calls.
+
+## Running Locally
+
+Create a Python environment, install [requirements.txt](requirements.txt), and launch Jupyter from `dior/`:
+
+```bash
+python -m pip install -r requirements.txt
+python -m jupyter lab
+```
+
+Obtain DIOR from the dataset authors and arrange the source images and annotations:
 
 ```text
 dior/
   dataset/JPEGImages/*.jpg
   dataset/Annotations/*.xml
   data.yaml
-  YOLO_Labels/                 # generated by cell 6
-  train/{images,labels}/       # generated by cell 8
-  val/{images,labels}/
-  test/{images,labels}/
 ```
 
-The first two extraction cells expect a particular academic ZIP bundle named `TGRSS ang DIOR remote sensing.zip`; that bundle is not required if data is arranged manually. **Skip those extraction cells when using the layout above.** Their nested extraction path does not automatically populate `dataset/JPEGImages` or `dataset/Annotations`. Choose a sample filename that exists before running the display cell.
+Set `path` in [data.yaml](data.yaml) to the absolute path of your `dior/` directory. With data arranged manually, skip the first two archive-extraction cells and choose an existing image filename for the sample display. The conversion and split cells generate `YOLO_Labels/` and `train/`, `val/`, and `test/` directories; start with fresh split folders when preparing a new experiment.
 
-`data.yaml` is reconstructed from the notebook's active class mapping (cell 6), since the original YAML was absent. Set `path` to the **absolute path of this `dior/` directory** before training. Relative image paths are resolved beneath that path. Generated split directories must be fresh: the original copy-based split code does not remove leftovers on reruns.
+Original split memberships are not included, so a new random subset may produce different results. Training generates checkpoints under `runs/`; the final evaluation cells require those checkpoints locally. Datasets and weights are excluded from Git, while saved outputs and plots remain available for browsing.
 
-The notebook will download upstream pretrained weights as needed. Training outputs go to ignored `runs/` directories. To inspect an existing local model without retraining, restore its checkpoint under the path used in the final evaluation cells and run imports, the evaluation function, and the relevant evaluation call. Checkpoints remain excluded from Git.
-
-## Known data and reproducibility limitations
-
-- Two class mappings occur in the notebook. The later active mapping uses lowercase `expressway-service-area` and `expressway-toll-station`, while saved EDA output includes capitalized names. Conversion silently skips unrecognized names, so casing can discard annotations. Do not treat the resulting metrics as complete 20-class coverage.
-- The saved EDA names are inconsistent with the preceding active mapping, indicating notebook state / execution-order drift. Historical outputs are retained as evidence, not certified as the result of a fresh top-to-bottom execution.
-- Dataset files, original `data.yaml`, and split memberships were not supplied. The reconstructed YAML establishes a runnable layout but cannot prove historical dataset equivalence.
-- Bounding-box conversion does not validate or clip malformed coordinates. No spatially independent split or geographic generalization test is implemented.
-- Recorded inference times reflect CPU measurements from the original environment and are not deployment latency guarantees.
-
-No dataset reconstruction, model execution, or training was performed during portfolio preparation.
+**Dataset reference:** Li et al., [*Object Detection in Optical Remote Sensing Images: A Survey and A New Benchmark*](https://arxiv.org/abs/1909.00133).
